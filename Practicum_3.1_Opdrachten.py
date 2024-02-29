@@ -1,72 +1,68 @@
-#Opdracht na HC 1
-#Maak met python minimaal drie arrays van minimaal 20 willekeurige en niet gesorteerde integers (meer mag ook).
-#Zoek op internet naar ten minste drie verschillende sorteeralgoritmes die je wilt gebruiken om de integer arrays mee te sorteren.
-#Implementer je gekozen sorteeralgoritmes om de integer arrays mee te sorteren. Maak voor elk sorteeralgoritme een nieuwe methode aan die een integer array als parameter heeft en de integer array gesorteerd returnt.
-#Kudos als je een moeilijk, super efficient of creatief algoritme kunt vinden óf zelfs bedenken ;)
-
+# Import necessary libraries
 import random
+import time
 
-#quick_sort algoritme (snelste)
+# Generate arrays for testing
+arr_quick = random.sample(range(1, 100), 20)
+arr_merge = random.sample(range(1, 100), 20)
+arr_bubble = random.sample(range(1, 100), 20)
+
 def quick_sort(arr):
     if len(arr) <= 1:
         return arr
-    else:
-        pivot = arr[0]
-        left = [x for x in arr[1:] if x <= pivot]
-        right = [x for x in arr[1:] if x > pivot]
-        return quick_sort(left) + [pivot] + quick_sort(right)
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quick_sort(left) + middle + quick_sort(right)
 
-#merge_sort algoritme (gemiddeld)
 def merge_sort(arr):
-    if len(arr) > 1:
-        mid = len(arr) // 2
-        left_half = arr[:mid]
-        right_half = arr[mid:]
+    if len(arr) <= 1:
+        return arr
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
+    return merge(left, right)
 
-        merge_sort(left_half)
-        merge_sort(right_half)
-
-        i = j = k = 0
-
-        while i < len(left_half) and j < len(right_half):
-            if left_half[i] < right_half[j]:
-                arr[k] = left_half[i]
-                i += 1
-            else:
-                arr[k] = right_half[j]
-                j += 1
-            k += 1
-
-        while i < len(left_half):
-            arr[k] = left_half[i]
+def merge(left, right):
+    result = []
+    i = j = 0
+    while i < len(left) and j < len(right):
+        if left[i] < right[j]:
+            result.append(left[i])
             i += 1
-            k += 1
-
-        while j < len(right_half):
-            arr[k] = right_half[j]
+        else:
+            result.append(right[j])
             j += 1
-            k += 1
+    result.extend(left[i:])
+    result.extend(right[j:])
+    return result
 
-    return arr    
- 
-#bubble_sort algoritme (langzaamst)
 def bubble_sort(arr):
     n = len(arr)
-    for i in range(n-1):
+    for i in range(n):
         for j in range(0, n-i-1):
             if arr[j] > arr[j+1]:
                 arr[j], arr[j+1] = arr[j+1], arr[j]
     return arr
 
-array1 = random.sample(range(1, 100), 20)
-array2 = random.sample(range(1, 100), 20)
-array3 = random.sample(range(1, 100), 20)       
+def print_result(algorithm_name, original_arr, sorted_arr, time_taken):
+    print(f"{algorithm_name}:\nOriginal Array: {original_arr}\nSorted Array: {sorted_arr}\nTime Taken: {time_taken:.6f} seconds\n")
 
-sorted_array1 = quick_sort(array1.copy())
-sorted_array2 = merge_sort(array2.copy())
-sorted_array3 = bubble_sort(array3.copy())
+# Quick Sort
+start_time = time.time()
+sorted_arr_quick = quick_sort(arr_quick.copy())
+end_time = time.time()
+print_result("Quick Sort", arr_quick, sorted_arr_quick, end_time - start_time)
 
-print("Quicksort:", sorted_array1)
-print("Mergesort:", sorted_array2)
-print("Bubblesort:", sorted_array3)
+# Merge Sort
+start_time = time.time()
+sorted_arr_merge = merge_sort(arr_merge.copy())
+end_time = time.time()
+print_result("Merge Sort", arr_merge, sorted_arr_merge, end_time - start_time)
 
+# Bubble Sort
+start_time = time.time()
+sorted_arr_bubble = bubble_sort(arr_bubble.copy())
+end_time = time.time()
+print_result("Bubble Sort", arr_bubble, sorted_arr_bubble, end_time - start_time)
