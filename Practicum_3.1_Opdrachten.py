@@ -1,8 +1,6 @@
-# Import necessary libraries
 import random
 import time
 
-# Generate arrays for testing
 arr_quick = random.sample(range(1, 100), 20)
 arr_merge = random.sample(range(1, 100), 20)
 arr_bubble = random.sample(range(1, 100), 20)
